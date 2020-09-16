@@ -5,7 +5,7 @@ This repository is a dockerized environment to record classes of vclass.sharif.e
 It's simple. Install docker and then create a `downloads` directory and use:
 
 ```bash
-docker run --rm -v "$(pwd)/downloads:/opt/downlaods" atofighi/skyroom-record:latest -u VLASS_URL -d CLASS_DURATION
+docker run --rm -v "$(pwd)/downloads:/opt/downloads" atofighi/skyroom-record:latest -u VLASS_URL -d CLASS_DURATION
 ```
 
 Notes:
