@@ -20,10 +20,6 @@ from skimage.metrics import structural_similarity as ssim
 
 pyautogui.FAILSAFE = False
 
-def click_on_page(icon):
-    icon_x, icon_y = pyautogui.locateCenterOnScreen(icon, confidence=0.6)
-    pyautogui.click(icon_x, icon_y)
-
 def split_to_100bulks(arr):
     result = []
     for i in range(math.ceil(len(arr)/100)):
@@ -89,10 +85,10 @@ def main():
     driver.execute_script("document.querySelector('.dlg-nickname .btn').click();")
 
     # start record
-    click_on_page('./skyroom-icon.png')
+    pyautogui.click(1819, 57)  # skyroom icon
     time.sleep(0.5)
-    click_on_page('./start-recording-btn.png')
-    click_on_page('./skyroom-icon.png')
+    pyautogui.click(1753, 184)  # start recording
+    pyautogui.click(1819, 57)  # skyroom icon
     pyautogui.click(0, 0)
 
     # wait for recording
@@ -110,9 +106,9 @@ def main():
         old_screenshot = cur_screenshot
 
     # stop record
-    click_on_page('./skyroom-icon.png')
+    pyautogui.click(1819, 57)  # skyroom icon
     time.sleep(0.5)
-    click_on_page('./stop-recording-btn.png')
+    pyautogui.click(1793, 185)  # stop recording
 
     # download file
     time.sleep(5)
