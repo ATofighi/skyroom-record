@@ -1,7 +1,7 @@
 FROM joyzoursky/python-chromedriver:3.8-selenium
 
 RUN apt update -y
-RUN apt install -y libx11-xcb1 fonts-ipafont-gothic xfonts-scalable fluxbox xorg xvfb dbus-x11 \
+RUN DEBIAN_FRONTEND=noninteractive apt install -y libx11-xcb1 fonts-ipafont-gothic xfonts-scalable fluxbox xorg xvfb dbus-x11 \
                    xfonts-100dpi xfonts-75dpi xfonts-cyrillic scrot python3-tk ffmpeg
 WORKDIR /opt/recorder/
 RUN pip install --upgrade pip
