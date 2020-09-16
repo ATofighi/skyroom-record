@@ -10,11 +10,9 @@ RUN pip install -r requirements.txt
 
 RUN mkdir -p /opt/downloads
 
-COPY src/run_xvfb.sh .
-COPY src/entrypoint.sh .
+COPY src/ .
+
 RUN chmod +x run_xvfb.sh
 RUN chmod +x entrypoint.sh
-
-COPY src/ .
 
 ENTRYPOINT [ "./entrypoint.sh" ]
