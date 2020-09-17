@@ -15,7 +15,11 @@ Notes:
 ## Development
 The main file is `src/main.py`. source code is not clean enough! sorry! ;)
 
-`src/screenshot.py` will screenshot whole screen every second and save it in `./downloads/my_screenshot.png` for development and debugging purpose.
+There is also a simple flask app in `src/app.py` for viewing current window and can do clicks for test. You can expose port 5000 for viewing current screen for example with this command:
+```bash
+docker run --rm -v "$(pwd)/downloads:/opt/downloads" -p 5000:5000 atofighi/skyroom-record:latest -u VLASS_URL -d CLASS_DURATION
+```
+And see `http://localhost:5000`. (Note: If you click on this page. App will click on docker window on that point.)
 
 
 ## Roadmap

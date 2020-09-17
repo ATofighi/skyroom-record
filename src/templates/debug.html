@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Record screen debugger</title>
+<style>
+    #screen {
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+</style>
+</head>
+<body>
+    <img src="/screen" id="screen" />
+    <script>
+        function refresh_screen() {
+            document.getElementById('screen').setAttribute('src', '/screen?timestamp=' + (new Date()));
+        }
+        setInterval(refresh_screen, 3000)
+        refresh_screen();
+
+        document.getElementById('screen').addEventListener('contextmenu', function(event) {
+            event.preventDefault();
+            var x = event.offsetX;
+            var y = event.offsetY;
+            fetch('/get_pixel?x=' + x + '&y=' + y).then(function(data) {
+                return data.text();
+            }).then(function(text) {
+                alert(text);
+            });
+            return false;
+        });
+
+        document.getElementById('screen').addEventListener('mousedown', function(event) {
+            var x = event.offsetX;
+            var y = event.offsetY;
+            fetch('/click?x=' + x + '&y=' + y);
+        });
+
+
+    </script>
+</body>
+</html>

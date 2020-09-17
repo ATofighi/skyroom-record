@@ -4,3 +4,4 @@ env/
 /debug.log
 /scripts.sh
 /chromedriver.exe
+__pycache__/
