@@ -9,6 +9,7 @@ import string
 import random
 import ffmpeg
 import argparse
+import logging
 
 from datetime import datetime, timedelta
 from selenium import webdriver
@@ -20,14 +21,63 @@ from skimage.metrics import structural_similarity as ssim
 
 pyautogui.FAILSAFE = False
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+SKYROOM_ICON = (1826, 43)
+START_RECORDING_ICON = (1690,178)
+BETWEEN_PAUSE_AND_STOP_ICON = (1750, 185)
+RECORDING_TAB_ICON = (209, 17)
+STOP_RECORDING_ICON = (1771, 180)
+CENTER_OF_DOWNLOAD_BAR = (825, 1173)
+
 def split_to_100bulks(arr):
     result = []
     for i in range(math.ceil(len(arr)/100)):
         result.append(arr[i*100:(i+1)*100])
     return result
 
-def goto_class(driver):    
+def goto_class(driver):
     driver.find_element_by_id('btn_guest').click()
+
+def is_skyroom_extension_open():
+    return pyautogui.pixelMatchesColor(*SKYROOM_ICON, (225, 225, 225))
+
+def is_tab_in_recording():
+    return pyautogui.pixelMatchesColor(*RECORDING_TAB_ICON, (26, 115, 232))
+
+def open_skyroom_popup():
+    for repeat_number in range(10):
+        try:
+            if not is_skyroom_extension_open():
+                pyautogui.click(*SKYROOM_ICON)
+                time.sleep(1)
+            if not is_skyroom_extension_open():
+                raise Exception('I clicked on skyroom icon but popup is not open! :|')
+            
+            break
+        except Exception as e:
+            logger.exception(e)
+
+def close_skyroom_popup():
+    for repeat_number in range(10):
+        try:
+            if is_skyroom_extension_open():
+                pyautogui.click(*SKYROOM_ICON)
+                time.sleep(1)
+            if is_skyroom_extension_open():
+                raise Exception('I clicked on skyroom icon but popup is not closed! :|')
+            
+            break
+        except Exception as e:
+            logger.exception(e)
+    pyautogui.click(0, 0)
+
+def force_refresh(driver):
+    driver.execute_script('window.onbeforeunload = function() {};')
+    time.sleep(0.5)
+    driver.refresh()
+
 
 def main():
     parser = argparse.ArgumentParser(description='This command will record a VClass page')
@@ -45,82 +95,197 @@ def main():
     chrome_options = Options()
     chrome_options.add_extension(os.path.join(SOURCE_DIR, 'skyroom.crx'))
     chrome_options.add_experimental_option("prefs", {
-    "download.default_directory": download_path,
-    "download.prompt_for_download": False,
-    "download.directory_upgrade": True,
-    "safebrowsing.enabled": True
+        "download.default_directory": download_path,
+        "download.prompt_for_download": False,
+        "download.directory_upgrade": True,
+        "safebrowsing.enabled": True
     })
     chrome_options.add_argument("--no-sandbox") 
     chrome_options.add_argument('--disable-dev-shm-usage')
     chrome_options.add_argument("disable-infobars") 
 
+    logger.info('Opening google chrome')
+    driver = None
+    for retry_number in range(10):
+        try:
+            if driver:
+                logger.info('Driver is not none, close it.')
+                driver.close()
+        except Exception as e:
+            logger.exception(e)
+        try:
+            driver = webdriver.Chrome(options=chrome_options)
 
-    driver = webdriver.Chrome(options=chrome_options)
+            driver.implicitly_wait(10)
+            time.sleep(2)
 
-    driver.implicitly_wait(10)
-    time.sleep(5)
+            driver.maximize_window()
+            time.sleep(1)
+            driver.maximize_window()
+            
+            break
+        except Exception as e:
+            logger.exception(e)
 
-    driver.maximize_window()
-    time.sleep(1)
-    driver.maximize_window()
+    logger.info('Create new window for not closing browser')
+    for retry_number in range(10):
+        try:
+            if len(driver.window_handles) < 2:
+                driver.execute_script("window.open('about:blank', 'tab2');")
+            time.sleep(2 * (retry_number + 1))
 
-    # config skyroom
-    driver.execute_script("window.open('about:blank', 'tab2');")
+            break
+        except Exception as e:
+            logger.exception(e)
 
-    driver.get("chrome-extension://pejdnafppnpfimpnipdkiidjancinenc/options.html")
-    ui.Select(driver.find_element_by_id('video_bitrate')).select_by_value('1000')
-    ui.Select(driver.find_element_by_id('audio_bitrate')).select_by_value('32')
-    # ui.Select(driver.find_element_by_id('record_stop_action')).select_by_value('download')
+    logger.info('Configure skyroom extension')
+    for retry_number in range(10):
+        try:
+            if len(driver.window_handles) > 1:
+                driver.switch_to.window(driver.window_handles[0])
+                driver.get("chrome-extension://pejdnafppnpfimpnipdkiidjancinenc/options.html")
+                ui.Select(driver.find_element_by_id('video_bitrate')).select_by_value('1000')
+                ui.Select(driver.find_element_by_id('audio_bitrate')).select_by_value('32')
+                # ui.Select(driver.find_element_by_id('record_stop_action')).select_by_value('download')
 
-    driver.find_element_by_id('btnSave').click()
+                driver.find_element_by_id('btnSave').click()
+            time.sleep(2 * (retry_number + 1))
+
+            break
+        except Exception as e:
+            logger.exception(e)
 
     # go to vclass
-    driver.switch_to.window(driver.window_handles[0])
-    driver.get(args.url)
+    logger.info('Open vclass')
+    for retry_number in range(10):
+        try:
+            driver.switch_to.window(driver.window_handles[0])
+            driver.get(args.url)
+            time.sleep(2 * (retry_number + 1))
+
+            break
+        except Exception as e:
+            logger.exception(e)
 
     # set name
-    goto_class(driver)
-    driver.find_element_by_xpath("//input[@class='full-width']")
-    driver.execute_script("document.querySelector('.dlg-nickname .full-width').value = 'ضبط کننده‌ی خودکار';")
-    driver.execute_script("document.querySelector('.dlg-nickname .btn').click();")
+    logger.info('Login as guest')
+    for retry_number in range(10):
+        try:
+            force_refresh(driver)
+            time.sleep(5 * retry_number)
+            goto_class(driver)
+            driver.find_element_by_xpath("//input[@class='full-width']")
+            driver.execute_script("document.querySelector('.dlg-nickname .full-width').value = 'ضبط کننده‌ی خودکار';")
+            driver.execute_script("document.querySelector('.dlg-nickname .btn').click();")
+
+            break
+        except Exception as e:
+            logger.exception(e)
 
     # start record
-    pyautogui.click(1819, 57)  # skyroom icon
-    time.sleep(0.5)
-    pyautogui.click(1753, 184)  # start recording
-    pyautogui.click(1819, 57)  # skyroom icon
-    pyautogui.click(0, 0)
+    logger.info('Start record')
+    for retry_number in range(10):
+        try:
+            open_skyroom_popup()
 
-    # wait for recording
+            if not is_tab_in_recording():
+                if not pyautogui.pixelMatchesColor(*START_RECORDING_ICON, (255, 0, 0)):
+                    close_skyroom_popup()
+                    raise Exception('Recording red color not found :|')
+
+                pyautogui.click(*START_RECORDING_ICON)
+                time.sleep(5)
+
+            if not pyautogui.pixelMatchesColor(*BETWEEN_PAUSE_AND_STOP_ICON, (245, 245, 245)):
+                raise Exception('I can not see pause and stop icon!')
+            if not is_tab_in_recording():
+                raise Exception('Tab blue recording icon can not be seen!')
+
+            close_skyroom_popup()
+
+            break
+        except Exception as e:
+            logger.exception(e)
+
+    logger.info('Recording in starting, watch for freeze detection!')
     end_time = datetime.now() + timedelta(minutes=args.duration)
     old_screenshot = cv2.imdecode(np.frombuffer(driver.get_screenshot_as_png(), np.uint8), -1)
     while datetime.now() < end_time:
-        cur_screenshot = cv2.imdecode(np.frombuffer(driver.get_screenshot_as_png(), np.uint8), -1)
-        # import pdb; pdb.set_trace()
-        similarity = ssim(old_screenshot, cur_screenshot, multichannel=True)
-        if similarity > 0.98:
-            driver.execute_script('window.onbeforeunload = function() {};')
-            driver.refresh()
-            goto_class(driver)
-        time.sleep(max(0, min(30, (end_time-datetime.now()).total_seconds())))
+        for retry_number in range(10):
+            try:
+                cur_screenshot = cv2.imdecode(np.frombuffer(driver.get_screenshot_as_png(), np.uint8), -1)
+                similarity = ssim(old_screenshot, cur_screenshot, multichannel=True)
+                if similarity > 0.98:
+                    logger.info('Screens are to similar, refresh!')
+                    force_refresh(driver)
+                    goto_class(driver)
+
+                break
+            except Exception as e:
+                logger.exception(e)
+
+        time.sleep(max(0, min(300, (end_time-datetime.now()).total_seconds())))
         old_screenshot = cur_screenshot
 
-    # stop record
-    pyautogui.click(1819, 57)  # skyroom icon
-    time.sleep(0.5)
-    pyautogui.click(1793, 185)  # stop recording
+    logger.info('Time is over, stop recording')
+    for retry_number in range(10):
+        try:
+            if is_tab_in_recording():
+                open_skyroom_popup()
+                
+                if not pyautogui.pixelMatchesColor(*STOP_RECORDING_ICON, (0, 0, 0)):
+                    raise Exception('I can not see stop recording black icon')
+                pyautogui.click(*STOP_RECORDING_ICON)
+                time.sleep(5)
+                close_skyroom_popup()
+            
+            if is_tab_in_recording():
+                raise Exception('I stop recording but tab is in recording :|')
+            if len(driver.window_handles) < 2:
+                raise Exception('Recording window is not open :(')
+
+            break
+        except Exception as e:
+            logger.exception(e)
 
     # download file
-    time.sleep(5)
-    driver.switch_to.window(driver.window_handles[1])
-    time.sleep(0.5)
-    driver.find_element_by_id('download').click()
+    for retry_number in range(10):
+        try:
+            time.sleep(5)
+            
+            driver.switch_to.window(driver.window_handles[1])
+            time.sleep(0.5)
+            
+            driver.find_element_by_id('download').click()
+            time.sleep(5)
+
+            if not pyautogui.pixelMatchesColor(*CENTER_OF_DOWNLOAD_BAR, (255, 255, 255)):
+                raise Exception('I can not see download bar')
+            
+            break
+        except Exception as e:
+            logger.exception(e)
 
     # close windows
-    time.sleep(5)
-    driver.close()
-    driver.switch_to.window(driver.window_handles[0])
-    driver.close()
+    for retry_number in range(100):
+        try:
+            if len(os.listdir(download_path)) == 0 or not os.listdir(download_path)[0].endswith('.webm'):
+                raise Exception('Downloaded file can not be found!')
+                time.sleep(5)        
+            break
+        except Exception as e:
+            logger.exception(e)
+
+    for retry_number in range(100):
+        try:
+            driver.switch_to.window(driver.window_handles[0])
+            driver.close()
+            time.sleep(3)
+            driver.switch_to.window(driver.window_handles[0])
+            driver.close()
+            break
+        except Exception as e:
+            logger.exception(e)
 
     # webm to mp4
     webm_file = os.listdir(download_path)[0]

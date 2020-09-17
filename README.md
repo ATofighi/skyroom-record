@@ -23,8 +23,12 @@ And see `http://localhost:5000`. (Note: If you click on this page. App will clic
 
 
 ## Roadmap
- 1. Add cronjob for schedule recording
- 2. Better failure detection (currently use screenshot similarity)
- 3. Handling exceptions and retry when something went wrong.
- 4. Logging for failure
- 5. Refactor code and make it clean
+Done:
+ - Handling exceptions and retry when something went wrong.
+ - Logging for failure
+
+TODO:
+ - Login with CW and vclass user/pass.
+ - Add cronjob for schedule recording
+ - Better failure detection (currently use screenshot similarity)
+ - Refactor code and make it clean
