@@ -1,4 +1,8 @@
 # Skyroom recording automation
+![Docker Cloud Automated build](https://img.shields.io/docker/cloud/automated/atofighi/skyroom-record)
+![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/atofighi/skyroom-record)
+![Docker Pulls](https://img.shields.io/docker/pulls/atofighi/skyroom-record)
+
 This repository is a dockerized environment to record classes of vclass.sharif.edu and skyroom.online.
 
 ## How to use?
