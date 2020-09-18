@@ -34,4 +34,4 @@ def get_pixel():
     x = int(request.args.get('x'))
     y = int(request.args.get('y'))
     color = pyautogui.pixel(x, y)
-    return f'{x},{y}:  {color.red}, {color.green}, {color.blue}'
+    return f'{x}, {y}:  {color.red}, {color.green}, {color.blue}'

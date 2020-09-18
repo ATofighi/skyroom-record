@@ -2,7 +2,7 @@ language: python
 python:
     - "3.8"
 
-install : "sudo pip install flake8"
+install : "pip install --upgrade flake8"
 
 script:
     - flake8 --count src/
