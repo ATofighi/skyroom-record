@@ -207,7 +207,7 @@ def main():
         except Exception as e:
             logger.exception(e)
 
-    logger.info('Recording in starting, watch for freeze detection!')
+    logger.info('Recording is started, watch for freeze detection!')
     end_time = datetime.now() + timedelta(minutes=args.duration)
     old_screenshot = cv2.imdecode(np.frombuffer(driver.get_screenshot_as_png(), np.uint8), -1)
     while datetime.now() < end_time:
@@ -216,7 +216,7 @@ def main():
                 cur_screenshot = cv2.imdecode(np.frombuffer(driver.get_screenshot_as_png(), np.uint8), -1)
                 similarity = ssim(old_screenshot, cur_screenshot, multichannel=True)
                 if similarity > 0.98:
-                    logger.info('Screens are to similar, refresh!')
+                    logger.info('Screenshots are too similar, refresh!')
                     force_refresh(driver)
                     goto_class(driver)
 
@@ -230,6 +230,7 @@ def main():
     logger.info('Time is over, stop recording')
     for retry_number in range(10):
         try:
+            time.sleep(5 * retry_number)
             if is_tab_in_recording():
                 open_skyroom_popup()
                 
@@ -257,7 +258,7 @@ def main():
             time.sleep(0.5)
             
             driver.find_element_by_id('download').click()
-            time.sleep(5)
+            time.sleep(5 * (1 + retry_number))
 
             if not pyautogui.pixelMatchesColor(*CENTER_OF_DOWNLOAD_BAR, (255, 255, 255)):
                 raise Exception('I can not see download bar')
@@ -271,7 +272,7 @@ def main():
         try:
             if len(os.listdir(download_path)) == 0 or not os.listdir(download_path)[0].endswith('.webm'):
                 raise Exception('Downloaded file can not be found!')
-                time.sleep(5)        
+                time.sleep(5 * (1 + retry_number))        
             break
         except Exception as e:
             logger.exception(e)
