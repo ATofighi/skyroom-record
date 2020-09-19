@@ -96,8 +96,10 @@ def main():
                         required=True, help='URL of vclass')
     parser.add_argument('-d', '--duration', type=float,
                         required=True, help='Duration of class in minutes')
-    parser.add_argument('-name', '--name', type=str,
+    parser.add_argument('-n', '--name', type=str,
                         required=True, help='Name of downloads folder')
+    parser.add_argument('-a', '--username', type=str,
+                        default='ضبط کننده خودکار', help='Username of skyroom user')
 
     args = parser.parse_args()
 
@@ -204,7 +206,7 @@ def main():
             driver.find_element_by_xpath("//input[@class='full-width']")
             driver.execute_script(
                 "document.querySelector('.dlg-nickname .full-width').value"
-                " = 'ضبط کننده‌ی خودکار';")
+                f" = '{args.username}';")
             driver.execute_script(
                 "document.querySelector('.dlg-nickname .btn').click();")
 
