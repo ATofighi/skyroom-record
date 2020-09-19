@@ -8,6 +8,9 @@ RUN pip install --upgrade pip
 COPY src/requirements.txt .
 RUN pip install -r requirements.txt
 
+ENV TZ=Asia/Tehran
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 RUN mkdir -p /opt/downloads
 
 COPY src/ .
