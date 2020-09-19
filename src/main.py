@@ -26,6 +26,8 @@ RECORDING_TAB_ICON = (209, 17)
 STOP_RECORDING_ICON = (1771, 180)
 CENTER_OF_DOWNLOAD_BAR = (825, 1173)
 
+FAILURE_TEST_INTERVAL = timedelta(minutes=5)
+
 
 def split_to_100bulks(arr):
     result = []
@@ -82,6 +84,8 @@ def force_refresh(driver):
     time.sleep(0.5)
     driver.refresh()
 
+def is_need_recording():
+    return not os.path.exists('./force-stop-recording')
 
 def main():
     parser = argparse.ArgumentParser(
@@ -98,10 +102,13 @@ def main():
     SOURCE_DIR = os.path.abspath(os.path.dirname(__file__))
     BASE_DIR = os.path.dirname(SOURCE_DIR)
 
-    os.mkdir(os.path.join(
-        BASE_DIR,
-        'downloads',
-        args.name))
+    try:
+        os.mkdir(os.path.join(
+            BASE_DIR,
+            'downloads',
+            args.name))
+    except FileExistsError:
+        pass
     download_path = os.path.join(
         BASE_DIR,
         'downloads',
@@ -233,27 +240,29 @@ def main():
     end_time = datetime.now() + timedelta(minutes=args.duration)
     old_screenshot = cv2.imdecode(np.frombuffer(
         driver.get_screenshot_as_png(), np.uint8), -1)
-    while datetime.now() < end_time:
-        for retry_number in range(10):
-            try:
-                cur_screenshot = cv2.imdecode(np.frombuffer(
-                    driver.get_screenshot_as_png(), np.uint8), -1)
-                similarity = ssim(
-                    old_screenshot, cur_screenshot, multichannel=True)
-                if similarity > 0.98:
-                    logger.info('Screenshots are too similar, refresh!')
-                    force_refresh(driver)
-                    goto_class(driver)
-
-                break
-            except Exception as e:
-                logger.exception(e)
+    next_failure_test = datetime.now() + FAILURE_TEST_INTERVAL
+    while datetime.now() < end_time and is_need_recording():
+        if datetime.now() >= next_failure_test:
+            for retry_number in range(10):
+                try:
+                    cur_screenshot = cv2.imdecode(np.frombuffer(
+                        driver.get_screenshot_as_png(), np.uint8), -1)
+                    similarity = ssim(
+                        old_screenshot, cur_screenshot, multichannel=True)
+                    if similarity > 0.98:
+                        logger.info('Screenshots are too similar, refresh!')
+                        force_refresh(driver)
+                        goto_class(driver)
+                    old_screenshot = cur_screenshot
+                    break
+                except Exception as e:
+                    logger.exception(e)
+            next_failure_test = datetime.now() + FAILURE_TEST_INTERVAL
 
         time.sleep(max(0, min(
-            300,
+            10,
             (end_time - datetime.now()).total_seconds()
         )))
-        old_screenshot = cur_screenshot
 
     logger.info('Time is over, stop recording')
     for retry_number in range(10):

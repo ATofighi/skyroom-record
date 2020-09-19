@@ -20,7 +20,7 @@ def screen():
     return send_file(screenshot_path, last_modified=datetime.now())
 
 
-@app.route('/click')
+@app.route('/click', methods=['POST'])
 def click_on_page():
     x = int(request.args.get('x'))
     y = int(request.args.get('y'))
@@ -35,3 +35,9 @@ def get_pixel():
     y = int(request.args.get('y'))
     color = pyautogui.pixel(x, y)
     return f'{x}, {y}:  {color.red}, {color.green}, {color.blue}'
+
+@app.route('/stop-recording', methods=['POST'])
+def stop_recording():
+    with open('./force-stop-recording', 'w') as f:
+        f.write('1')
+    return 'ok'

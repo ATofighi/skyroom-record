@@ -3,15 +3,9 @@
 <head>
 <meta charset="utf-8">
 <title>Record screen debugger</title>
-<style>
-    #screen {
-        position: absolute;
-        left: 0;
-        top: 0;
-    }
-</style>
 </head>
 <body>
+    <button id="stop-recording">Stop Recording</button>
     <img src="/screen" id="screen" />
     <script>
         function refresh_screen() {
@@ -20,6 +14,11 @@
         setInterval(refresh_screen, 3000)
         refresh_screen();
 
+        document.getElementById('stop-recording').addEventListener('mousedown', function(event) {
+            fetch('/stop-recording', {
+                method: 'POST',
+            });
+        });
         document.getElementById('screen').addEventListener('contextmenu', function(event) {
             event.preventDefault();
             var x = event.offsetX;
@@ -35,7 +34,9 @@
         document.getElementById('screen').addEventListener('mousedown', function(event) {
             var x = event.offsetX;
             var y = event.offsetY;
-            fetch('/click?x=' + x + '&y=' + y);
+            fetch('/click?x=' + x + '&y=' + y, {
+                method: 'POST',
+            });
         });
 
 
