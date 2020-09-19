@@ -9,12 +9,13 @@ This repository is a dockerized environment to record classes of vclass.sharif.e
 It's simple. Install docker and then create a `downloads` directory and use:
 
 ```bash
-docker run --rm -v "$(pwd)/downloads:/opt/downloads" atofighi/skyroom-record:latest -u VLASS_URL -d CLASS_DURATION
+docker run --rm -v "$(pwd)/downloads:/opt/downloads" atofighi/skyroom-record:latest -u VLASS_URL -d CLASS_DURATION -n test-class
 ```
 
 Notes:
  - VCLASS_URL must be the url of class with `https://`.
  - CLASS_DURATION must be the duration of recording in minutes. like `90`
+ - Your recorded video will be saved on `./downloads/test-class/NOW/video.mp4`.
 
 ## Development
 The main file is `src/main.py`. source code is not clean enough! sorry! ;)

@@ -4,8 +4,6 @@ import time
 import math
 import cv2
 import numpy as np
-import string
-import random
 import ffmpeg
 import argparse
 import logging
@@ -92,21 +90,23 @@ def main():
                         required=True, help='URL of vclass')
     parser.add_argument('-d', '--duration', type=float,
                         required=True, help='Duration of class in minutes')
+    parser.add_argument('-name', '--name', type=str,
+                        required=True, help='Name of downloads folder')
 
     args = parser.parse_args()
 
     SOURCE_DIR = os.path.abspath(os.path.dirname(__file__))
     BASE_DIR = os.path.dirname(SOURCE_DIR)
 
+    os.mkdir(os.path.join(
+        BASE_DIR,
+        'downloads',
+        args.name))
     download_path = os.path.join(
         BASE_DIR,
         'downloads',
-        datetime.now().isoformat() +
-        '--' +
-        ''.join(
-            random.choices(
-                string.ascii_lowercase,
-                k=10)))
+        args.name,
+        datetime.now().strftime("%Y-%m-%d--%H-%M"))
     os.mkdir(download_path)
 
     chrome_options = Options()
