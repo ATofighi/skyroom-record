@@ -36,6 +36,7 @@ def get_pixel():
     color = pyautogui.pixel(x, y)
     return f'{x}, {y}:  {color.red}, {color.green}, {color.blue}'
 
+
 @app.route('/stop-recording', methods=['POST'])
 def stop_recording():
     with open('./force-stop-recording', 'w') as f:

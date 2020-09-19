@@ -84,8 +84,10 @@ def force_refresh(driver):
     time.sleep(0.5)
     driver.refresh()
 
+
 def is_need_recording():
     return not os.path.exists('./force-stop-recording')
+
 
 def main():
     parser = argparse.ArgumentParser(
@@ -307,12 +309,13 @@ def main():
             logger.exception(e)
 
     # close windows
+    time.sleep(60 + 3 * args.duration)
     for retry_number in range(100):
         try:
             if len(os.listdir(download_path)) == 0 or not os.listdir(
                     download_path)[0].endswith('.webm'):
                 raise Exception('Downloaded file can not be found!')
-                time.sleep(5 * (1 + retry_number))
+                time.sleep(10 * (1 + retry_number))
             break
         except Exception as e:
             logger.exception(e)
