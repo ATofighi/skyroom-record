@@ -99,7 +99,7 @@ def main():
     parser.add_argument('-n', '--name', type=str,
                         required=True, help='Name of downloads folder')
     parser.add_argument('-a', '--username', type=str,
-                        default='ضبط کننده خودکار', help='Username of skyroom user')
+                        default='ضبط کننده', help='Username of skyroom user')
 
     args = parser.parse_args()
 
