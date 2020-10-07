@@ -100,11 +100,14 @@ def main():
                         required=True, help='Name of downloads folder')
     parser.add_argument('-a', '--username', type=str,
                         default='ضبط کننده', help='Username of skyroom user')
+    parser.add_argument('-c', '--convert', type=bool, default=False,
+                        help='Convert webm to mp4')
 
     args = parser.parse_args()
 
     SOURCE_DIR = os.path.abspath(os.path.dirname(__file__))
     BASE_DIR = os.path.dirname(SOURCE_DIR)
+
 
     try:
         os.mkdir(os.path.join(
@@ -292,6 +295,7 @@ def main():
             logger.exception(e)
 
     # download file
+    logger.info('Downloading video')
     for retry_number in range(10):
         try:
             time.sleep(5)
@@ -312,6 +316,7 @@ def main():
 
     # close windows
     time.sleep(60 + 3 * args.duration)
+    logger.info("Closing all windows")
     for retry_number in range(100):
         try:
             if len(os.listdir(download_path)) == 0 or not os.listdir(
@@ -334,17 +339,19 @@ def main():
             logger.exception(e)
 
     # webm to mp4
-    webm_file = os.path.join(
-        download_path,
-        os.listdir(download_path)[0]
-    )
-    new_webm_file = os.path.join(download_path, 'video.webm')
-    os.rename(webm_file, new_webm_file)
+    logger.info(args.convert)
+    if args.convert:
+        webm_file = os.path.join(
+            download_path,
+            os.listdir(download_path)[0]
+        )
+        new_webm_file = os.path.join(download_path, 'video.webm')
+        os.rename(webm_file, new_webm_file)
 
-    ffmpeg.input(new_webm_file).output(
-        os.path.join(download_path, 'video.mp4'),
-        **{'vcodec': 'h264', 'acodec': 'mp3', }
-    ).run()
+        ffmpeg.input(new_webm_file).output(
+            os.path.join(download_path, 'video.mp4'),
+            **{'vcodec': 'h264', 'acodec': 'mp3', }
+        ).run()
 
 
 if __name__ == "__main__":
