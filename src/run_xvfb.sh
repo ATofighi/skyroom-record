@@ -1,6 +1,6 @@
 #!/bin/bash
 
-Xvfb :99 -screen 0 1922x1197x24 &
+Xvfb :99 -screen 0 1368x885x24 &
 
 touch ~/.Xauthority
 

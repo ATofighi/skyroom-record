@@ -19,12 +19,13 @@ pyautogui.FAILSAFE = False
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-SKYROOM_ICON = (1826, 43)
-START_RECORDING_ICON = (1690, 178)
-BETWEEN_PAUSE_AND_STOP_ICON = (1750, 185)
+SKYROOM_ICON = (1272, 43)
+START_RECORDING_ICON = (1136, 178)
+BETWEEN_PAUSE_AND_STOP_ICON = (1196, 185)
 RECORDING_TAB_ICON = (209, 17)
-STOP_RECORDING_ICON = (1771, 180)
-CENTER_OF_DOWNLOAD_BAR = (825, 1173)
+STOP_RECORDING_ICON = (1217, 180)
+CENTER_OF_DOWNLOAD_BAR = (825, 861)
+CLOSE_NOTIFICATION = (413, 83)
 
 FAILURE_TEST_INTERVAL = timedelta(minutes=5)
 
@@ -47,6 +48,8 @@ def is_skyroom_extension_open():
 def is_tab_in_recording():
     return pyautogui.pixelMatchesColor(*RECORDING_TAB_ICON, (26, 115, 232))
 
+def close_chrome_notification():
+    pyautogui.click(*CLOSE_NOTIFICATION)
 
 def open_skyroom_popup():
     for repeat_number in range(10):
@@ -239,6 +242,8 @@ def main():
             break
         except Exception as e:
             logger.exception(e)
+    
+    close_chrome_notification()
 
     logger.info('Recording is started, watch for freeze detection!')
     end_time = datetime.now() + timedelta(minutes=args.duration)
