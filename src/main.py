@@ -48,8 +48,10 @@ def is_skyroom_extension_open():
 def is_tab_in_recording():
     return pyautogui.pixelMatchesColor(*RECORDING_TAB_ICON, (26, 115, 232))
 
+
 def close_chrome_notification():
     pyautogui.click(*CLOSE_NOTIFICATION)
+
 
 def open_skyroom_popup():
     for repeat_number in range(10):
@@ -242,7 +244,7 @@ def main():
             break
         except Exception as e:
             logger.exception(e)
-    
+
     close_chrome_notification()
 
     logger.info('Recording is started, watch for freeze detection!')
