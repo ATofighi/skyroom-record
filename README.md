@@ -9,8 +9,14 @@ This repository is a dockerized environment to record classes of vclass.sharif.e
 It's simple. Install docker and then create a `downloads` directory and use:
 
 ```bash
-docker run --rm -v "$(pwd)/downloads:/opt/downloads" atofighi/skyroom-record:latest -u VLASS_URL -d CLASS_DURATION -n test-class
+docker run --rm -v "$(pwd)/downloads:/opt/downloads" atofighi/skyroom-record:latest -u VLASS_URL -d CLASS_DURATION -n test-class -e encoding
 ```
+### Encoding preset -e
+This option converts the .webm file to a .mp4 file. It has encoding presets that should be defined otherwise no conversion would occur.
+'size-optimized' -for uploading, low size, low quality, somewhat fast
+'speed-optimized' -for high speed with good quality but higher size
+'quality-optimized' -for high quality with good compression but slow
+'no-encoding' -default -best quality, medium size
 
 Notes:
  - VCLASS_URL must be the url of class with `https://`.
