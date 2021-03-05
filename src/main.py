@@ -360,7 +360,7 @@ def main():
              preset='slow', 
              movflags='+faststart' 
         ).run()
-    elif args.encoding == "speed-optimized"
+    elif args.encoding == "speed-optimized":
         ffmpeg.input(new_webm_file).output(
              os.path.join(download_path, 'video.mp4'), 
              **{'vcodec': 'libx264', 'acodec': 'aac', }, 
@@ -369,7 +369,7 @@ def main():
              s='852x480', 
              movflags='+faststart' 
         ).run()
-    elif args.encoding == "size-optimized"
+    elif args.encoding == "size-optimized":
         ffmpeg.input('video.webm').output(
             'video2.mp4',
             **{'vcodec': 'libx264', 'acodec': 'aac', },
