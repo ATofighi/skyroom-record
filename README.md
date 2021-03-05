@@ -11,17 +11,24 @@ It's simple. Install docker and then create a `downloads` directory and use:
 ```bash
 docker run --rm -v "$(pwd)/downloads:/opt/downloads" atofighi/skyroom-record:latest -u VLASS_URL -d CLASS_DURATION -n test-class -e encoding
 ```
-### Encoding preset -e
-This option converts the .webm file to a .mp4 file. It has encoding presets that should be defined otherwise no conversion would occur.
-'size-optimized' -for uploading, low size, low quality, somewhat fast
-'speed-optimized' -for high speed with good quality but higher size
-'quality-optimized' -for high quality with good compression but slow
-'no-encoding' -default -best quality, medium size
 
 Notes:
  - VCLASS_URL must be the url of class with `https://`.
  - CLASS_DURATION must be the duration of recording in minutes. like `90`
  - Your recorded video will be saved on `./downloads/test-class/NOW/video.mp4`.
+ - Encoding preset -e
+ 
+      This option converts the .webm file to a .mp4 file. It has encoding presets that should be defined otherwise no conversion would occur.
+
+      `size-optimized` -for uploading, low size, low quality, somewhat fast
+
+      `speed-optimized` -for high speed with good quality but higher size
+
+      `quality-optimized` -for high quality with good compression but slow
+
+      `no-encoding` -default -best quality, medium size
+
+   
 
 ## Development
 The main file is `src/main.py`. source code is not clean enough! sorry! ;)
