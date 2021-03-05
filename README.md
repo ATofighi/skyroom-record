@@ -18,7 +18,7 @@ Notes:
  - Your recorded video will be saved on `./downloads/test-class/NOW/video.mp4`.
  - Encoding preset -e
  
-      This option converts the .webm file to a .mp4 file. It has encoding presets that should be defined otherwise no conversion would occur.
+      This option converts the `.webm` file to a `.mp4` file. It has encoding presets that should be defined otherwise no conversion would occur.
 
       `size-optimized` -for uploading, low size, low quality, somewhat fast
 
