@@ -385,11 +385,5 @@ def main():
 
 
 
-    ffmpeg.input(new_webm_file).output(
-        os.path.join(download_path, 'video.mp4'),
-        **{'vcodec': 'h264', 'acodec': 'mp3', }
-    ).run()
-
-
 if __name__ == "__main__":
     main()
