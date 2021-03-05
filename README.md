@@ -15,7 +15,7 @@ docker run --rm -v "$(pwd)/downloads:/opt/downloads" atofighi/skyroom-record:lat
 Notes:
  - VCLASS_URL must be the url of class with `https://`.
  - CLASS_DURATION must be the duration of recording in minutes. like `90`
- - Your recorded video will be saved on `./downloads/test-class/NOW/video.mp4`.
+ - Your recorded video will be saved on `./downloads/test-class/NOW/video.webm`.
  - Encoding preset -e
  
       This option converts the `.webm` file to a `.mp4` file. It has encoding presets that should be defined otherwise no conversion would occur.
