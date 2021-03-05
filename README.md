@@ -26,7 +26,7 @@ Notes:
 
       `quality-optimized` -for high quality with good compression but slow
 
-      `no-encoding` -default -best quality, medium size
+      `no-encoding` -default best quality, medium size, no conversion
 
    
 
