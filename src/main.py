@@ -351,8 +351,9 @@ def main():
     new_webm_file = os.path.join(download_path, 'video.webm')
     os.rename(webm_file, new_webm_file)
 
+    ffmpeg_pipe = ffmpeg.input(new_webm_file)
     if args.encoding == "quality-optimized":
-        ffmpeg.input(new_webm_file).output(
+        ffmpeg_pipe.output(
              os.path.join(download_path, 'video.mp4'),
              **{'vcodec': 'libx264', 'acodec': 'aac', }, 
              crf='36', 
@@ -361,7 +362,7 @@ def main():
              movflags='+faststart' 
         ).run()
     elif args.encoding == "speed-optimized":
-        ffmpeg.input(new_webm_file).output(
+        ffmpeg_pipe.output(
              os.path.join(download_path, 'video.mp4'), 
              **{'vcodec': 'libx264', 'acodec': 'aac', }, 
              crf='28', 
@@ -370,7 +371,7 @@ def main():
              movflags='+faststart' 
         ).run()
     elif args.encoding == "size-optimized":
-        ffmpeg.input('video.webm').output(
+        ffmpeg_pipe.output(
             'video2.mp4',
             **{'vcodec': 'libx264', 'acodec': 'aac', },
 	        crf='28',
