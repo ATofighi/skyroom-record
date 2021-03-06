@@ -372,14 +372,14 @@ def main():
         ).run()
     elif args.encoding == "size-optimized":
         ffmpeg_pipe.output(
-                os.path.join(download_path, 'video.mp4'),
-                **{'vcodec': 'libx264', 'acodec': 'aac', },
-                crf='28',
-                tune='stillimage',
-                preset='veryfast',
-                s='640x360',
-                movflags='+faststart'
-            ).run()
+            os.path.join(download_path, 'video.mp4'),
+            **{'vcodec': 'libx264', 'acodec': 'aac', },
+            crf='28',
+            tune='stillimage',
+            preset='veryfast',
+            s='640x360',
+            movflags='+faststart'
+        ).run()
 
 
 if __name__ == "__main__":
