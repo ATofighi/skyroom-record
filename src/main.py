@@ -351,6 +351,7 @@ def main():
     new_webm_file = os.path.join(download_path, 'video.webm')
     os.rename(webm_file, new_webm_file)
 
+    ffmpeg_pipe = ffmpeg.input(new_webm_file)
     if args.encoding == "quality-optimized":
         ffmpeg.input(new_webm_file).output(
              os.path.join(download_path, 'video.mp4'),
