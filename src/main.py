@@ -353,7 +353,7 @@ def main():
 
     ffmpeg_pipe = ffmpeg.input(new_webm_file)
     if args.encoding == "quality-optimized":
-        ffmpeg.input(new_webm_file).output(
+        ffmpeg_pipe.output(
              os.path.join(download_path, 'video.mp4'),
              **{'vcodec': 'libx264', 'acodec': 'aac', }, 
              crf='36', 
