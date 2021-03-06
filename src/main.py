@@ -371,7 +371,7 @@ def main():
              movflags='+faststart' 
         ).run()
     elif args.encoding == "size-optimized":
-        ffmpeg.input('video.webm').output(
+        ffmpeg_pipe.output(
             'video2.mp4',
             **{'vcodec': 'libx264', 'acodec': 'aac', },
 	        crf='28',
