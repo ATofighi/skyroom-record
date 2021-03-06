@@ -362,7 +362,7 @@ def main():
              movflags='+faststart' 
         ).run()
     elif args.encoding == "speed-optimized":
-        ffmpeg.input(new_webm_file).output(
+        ffmpeg_pipe.output(
              os.path.join(download_path, 'video.mp4'), 
              **{'vcodec': 'libx264', 'acodec': 'aac', }, 
              crf='28', 
