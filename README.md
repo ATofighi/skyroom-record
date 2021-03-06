@@ -9,13 +9,26 @@ This repository is a dockerized environment to record classes of vclass.sharif.e
 It's simple. Install docker and then create a `downloads` directory and use:
 
 ```bash
-docker run --rm -v "$(pwd)/downloads:/opt/downloads" atofighi/skyroom-record:latest -u VLASS_URL -d CLASS_DURATION -n test-class
+docker run --rm -v "$(pwd)/downloads:/opt/downloads" atofighi/skyroom-record:latest -u VLASS_URL -d CLASS_DURATION -n test-class -e encoding
 ```
 
 Notes:
  - VCLASS_URL must be the url of class with `https://`.
  - CLASS_DURATION must be the duration of recording in minutes. like `90`
- - Your recorded video will be saved on `./downloads/test-class/NOW/video.mp4`.
+ - Your recorded video will be saved on `./downloads/test-class/NOW/video.webm`.
+ - Encoding preset -e
+ 
+      This option converts the `.webm` file to a `.mp4` file. It has encoding presets that should be defined otherwise no conversion would occur.
+
+      `size-optimized` -for uploading, low size, low quality, somewhat fast
+
+      `speed-optimized` -for high speed with good quality but higher size
+
+      `quality-optimized` -for high quality with good compression but slow
+
+      `no-encoding` -default best quality, medium size, no conversion
+
+   
 
 ## Development
 The main file is `src/main.py`. source code is not clean enough! sorry! ;)
@@ -37,3 +50,5 @@ TODO:
  - Add cronjob for schedule recording
  - Better failure detection (currently use screenshot similarity)
  - Refactor code and make it clean
+
+<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>, and it is offered “as-is”, without warranty, and we disclaim liability for any type of damages or problems resulting from using or abusing the project.

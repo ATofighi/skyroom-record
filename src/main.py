@@ -105,6 +105,9 @@ def main():
                         required=True, help='Name of downloads folder')
     parser.add_argument('-a', '--username', type=str,
                         default='ضبط کننده', help='Username of skyroom user')
+    parser.add_argument('-e', '--encoding', type=str,
+                        default='no-encode',
+                        help='Encoding preset, see readme.md')
 
     args = parser.parse_args()
 
@@ -348,10 +351,35 @@ def main():
     new_webm_file = os.path.join(download_path, 'video.webm')
     os.rename(webm_file, new_webm_file)
 
-    ffmpeg.input(new_webm_file).output(
-        os.path.join(download_path, 'video.mp4'),
-        **{'vcodec': 'h264', 'acodec': 'mp3', }
-    ).run()
+    ffmpeg_pipe = ffmpeg.input(new_webm_file)
+    if args.encoding == "quality-optimized":
+        ffmpeg_pipe.output(
+            os.path.join(download_path, 'video.mp4'),
+            **{'vcodec': 'libx264', 'acodec': 'aac', },
+            crf='36',
+            tune='stillimage',
+            preset='slow',
+            movflags='+faststart'
+        ).run()
+    elif args.encoding == "speed-optimized":
+        ffmpeg_pipe.output(
+            os.path.join(download_path, 'video.mp4'),
+            **{'vcodec': 'libx264', 'acodec': 'aac', },
+            crf='28',
+            preset='ultrafast',
+            s='852x480',
+            movflags='+faststart'
+        ).run()
+    elif args.encoding == "size-optimized":
+        ffmpeg_pipe.output(
+            os.path.join(download_path, 'video.mp4'),
+            **{'vcodec': 'libx264', 'acodec': 'aac', },
+            crf='28',
+            tune='stillimage',
+            preset='veryfast',
+            s='640x360',
+            movflags='+faststart'
+        ).run()
 
 
 if __name__ == "__main__":
