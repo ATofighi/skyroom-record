@@ -29,6 +29,7 @@ CLOSE_NOTIFICATION = (413, 83)
 
 FAILURE_TEST_INTERVAL = timedelta(minutes=5)
 
+
 def split_to_100bulks(arr):
     result = []
     for i in range(math.ceil(len(arr) / 100)):
@@ -116,7 +117,6 @@ def main():
     SOURCE_DIR = os.path.abspath(os.path.dirname(__file__))
     BASE_DIR = os.path.dirname(SOURCE_DIR)
 
-
     if args.url != '' and args.video != '':
         print('You cant define the -v argument for recording')
         exit()
@@ -174,7 +174,8 @@ def main():
         for retry_number in range(10):
             try:
                 if len(driver.window_handles) < 2:
-                    driver.execute_script("window.open('about:blank', 'tab2');")
+                    driver.execute_script(
+                        "window.open('about:blank', 'tab2');")
                 time.sleep(2 * (retry_number + 1))
 
                 break
@@ -271,7 +272,8 @@ def main():
                         similarity = ssim(
                             old_screenshot, cur_screenshot, multichannel=True)
                         if similarity > 0.98:
-                            logger.info('Screenshots are too similar, refresh!')
+                            logger.info(
+                                'Screenshots are too similar, refresh!')
                             force_refresh(driver)
                             goto_class(driver)
                         old_screenshot = cur_screenshot
@@ -294,13 +296,15 @@ def main():
 
                     if not pyautogui.pixelMatchesColor(
                             *STOP_RECORDING_ICON, (0, 0, 0)):
-                        raise Exception('I can not see stop recording black icon')
+                        raise Exception(
+                            'I can not see stop recording black icon')
                     pyautogui.click(*STOP_RECORDING_ICON)
                     time.sleep(5)
                     close_skyroom_popup()
 
                 if is_tab_in_recording():
-                    raise Exception('I stop recording but tab is in recording :|')
+                    raise Exception(
+                        'I stop recording but tab is in recording :|')
                 if len(driver.window_handles) < 2:
                     raise Exception('Recording window is not open :(')
 
@@ -349,7 +353,7 @@ def main():
                 break
             except Exception as e:
                 logger.exception(e)
-        
+
         webm_file = os.path.join(
             download_path,
             os.listdir(download_path)[0]
