@@ -16,19 +16,19 @@ Notes:
  - VCLASS_URL must be the url of class with `https://`.
  - CLASS_DURATION must be the duration of recording in minutes. like `90`
  - Your recorded video will be saved on `./downloads/test-class/NOW/video.webm`.
- - Encoding preset -e
+ - To update your docker image you can just run: `docker pull atofighi/skyroom-record`.
+ - Encoding quality `-e`
  
       This option converts the `.webm` file to a `.mp4` file. It has encoding presets that should be defined otherwise no conversion would occur.
 
-      `size-optimized` -for uploading, low size, low quality, somewhat fast
+      `high` -best quality, slower and higher in size
 
-      `speed-optimized` -for high speed with good quality but higher size
+      `medium` -best choice for uploading, medium quality, medium speed, medium size
 
-      `quality-optimized` -for high quality with good compression but slow
+      `low` - chat text becomes unreadable but low in size and fast
 
       `no-encoding` -default best quality, medium size, no conversion
-
-   
+ - With the `-v` option you can specify a file to encode without needing to record. Please note that when using this option you should provide only `-e` and `-v` otherwise it wouldn't work.
 
 ## Development
 The main file is `src/main.py`. source code is not clean enough! sorry! ;)
