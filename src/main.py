@@ -375,6 +375,7 @@ def main():
             preset='veryfast',
             r='25',
             ac='1',
+            max_muxing_queue_size='9999',
             movflags='+faststart'
         ).run()
     elif args.encoding == "medium":
@@ -387,6 +388,7 @@ def main():
             s='852x480',
             r='20',
             ac='1',
+            max_muxing_queue_size='9999',
             movflags='+faststart'
         ).run()
     elif args.encoding == "low":
@@ -399,6 +401,7 @@ def main():
             s='640x360',
             r='15',
             ac='1',
+            max_muxing_queue_size='9999',
             movflags='+faststart'
         ).run()
 
