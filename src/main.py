@@ -374,6 +374,8 @@ def main():
             tune='stillimage',
             preset='veryfast',
             r='25',
+            ac='1',
+            max_muxing_queue_size='9999',
             movflags='+faststart'
         ).run()
     elif args.encoding == "medium":
@@ -385,6 +387,8 @@ def main():
             preset='veryfast',
             s='852x480',
             r='20',
+            ac='1',
+            max_muxing_queue_size='9999',
             movflags='+faststart'
         ).run()
     elif args.encoding == "low":
@@ -396,6 +400,8 @@ def main():
             preset='veryfast',
             s='640x360',
             r='15',
+            ac='1',
+            max_muxing_queue_size='9999',
             movflags='+faststart'
         ).run()
 
